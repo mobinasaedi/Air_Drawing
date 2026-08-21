@@ -81,14 +81,6 @@ cv2.setWindowProperty(
 screen_width = 1920
 screen_height = 1080
 
-# Try to get monitor resolution using OpenCV.
-# If unavailable, the default above is used.
-
-try:
-    temp = cv2.imread("")
-except:
-    pass
-
 
 # ============================================================
 # CANVAS
@@ -99,10 +91,9 @@ canvas = None
 prev_x = None
 prev_y = None
 
+# Smoothed finger coordinates
 prev_smooth_x = None
 prev_smooth_y = None
-
-timestamp_ms = 0
 
 
 # ============================================================
@@ -251,11 +242,16 @@ def clear_canvas():
     global canvas
     global prev_x
     global prev_y
+    global prev_smooth_x
+    global prev_smooth_y
 
     canvas[:] = 0
 
     prev_x = None
     prev_y = None
+
+    prev_smooth_x = None
+    prev_smooth_y = None
 
     print("Canvas cleared")
 
@@ -299,6 +295,7 @@ while True:
         data=rgb_frame
     )
 
+    # Real timestamp
     timestamp_ms = int(time.time() * 1000)
 
     result = detector.detect_for_video(
@@ -319,16 +316,47 @@ while True:
 
         gesture = get_gesture(hand)
 
-        # Index fingertip
+        # ====================================================
+        # INDEX FINGERTIP
+        # ====================================================
+
         index_tip = hand[8]
 
         h, w, _ = frame.shape
 
-        smooth_x = int(prev_smooth_x * 0.7 + x * 0.3)
-        smooth_y = int(prev_smooth_y * 0.7 + y * 0.3)
+        # Convert normalized coordinates to pixel coordinates
+        x = int(index_tip.x * w)
+        y = int(index_tip.y * h)
 
+        # Keep coordinates inside frame
         x = max(0, min(w - 1, x))
         y = max(0, min(h - 1, y))
+
+
+        # ====================================================
+        # SMOOTH FINGER MOVEMENT
+        # ====================================================
+
+        if prev_smooth_x is None or prev_smooth_y is None:
+
+            prev_smooth_x = x
+            prev_smooth_y = y
+
+        else:
+
+            prev_smooth_x = int(
+                prev_smooth_x * 0.7
+                + x * 0.3
+            )
+
+            prev_smooth_y = int(
+                prev_smooth_y * 0.7
+                + y * 0.3
+            )
+
+        # Use smoothed coordinates
+        x = prev_smooth_x
+        y = prev_smooth_y
 
 
         # ====================================================
@@ -357,7 +385,7 @@ while True:
                     (prev_x, prev_y),
                     (x, y),
                     current_color,
-                    6,
+                    10,
                     cv2.LINE_AA
                 )
 
@@ -451,10 +479,17 @@ while True:
             prev_y = None
 
 
+    # ========================================================
+    # NO HAND
+    # ========================================================
+
     else:
 
         prev_x = None
         prev_y = None
+
+        prev_smooth_x = None
+        prev_smooth_y = None
 
         thumb_action_done = False
         two_finger_action_done = False
@@ -477,11 +512,19 @@ while True:
 
     output = frame.copy()
 
-    mask = cv2.cvtColor(canvas, cv2.COLOR_BGR2GRAY)
-    _, mask = cv2.threshold(mask, 1, 255, cv2.THRESH_BINARY)
+    mask = cv2.cvtColor(
+        canvas,
+        cv2.COLOR_BGR2GRAY
+    )
+
+    _, mask = cv2.threshold(
+        mask,
+        1,
+        255,
+        cv2.THRESH_BINARY
+    )
 
     output[mask > 0] = canvas[mask > 0]
-    
 
 
     # ========================================================
@@ -691,10 +734,3 @@ cap.release()
 detector.close()
 
 cv2.destroyAllWindows()
-
-import mediapipe as mp
-
-print(mp.tasks)
-import os
-
-print(os.listdir())
