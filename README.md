@@ -1,4 +1,4 @@
-Air_Drawing
+#Air_Drawing
 An air-drawing system using hand and finger gesture recognition with Python, OpenCV, and MediaPipe
 
 README
