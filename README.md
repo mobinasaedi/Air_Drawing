@@ -1,88 +1,107 @@
-# Air_Drawing
-سیستم نقاشی در هوا با استفاده از تشخیص حرکات دست و انگشت با Python، OpenCV و MediaPipe
+Air_Drawing
+An air-drawing system using hand and finger gesture recognition with Python, OpenCV, and MediaPipe
+
 README
-🎨 Air Drawing — نقاشی در هوا با تشخیص دست
+🎨 Air Drawing — Draw in the Air with Hand Detection
 
-یک پروژه‌ی Computer Vision با Python که به کاربر اجازه می‌دهد بدون لمس صفحه و تنها با حرکت انگشت، روی تصویر دوربین نقاشی کند.
+A Computer Vision project in Python that lets the user draw on the camera feed without touching the screen, using only finger movements.
 
-در این پروژه با استفاده از MediaPipe Hand Landmarker حرکات دست و انگشت تشخیص داده می‌شوند و هر حرکت به یک دستور مشخص برای نقاشی، پاک کردن، تغییر رنگ و پاک کردن کامل صفحه تبدیل می‌شود.
+In this project, MediaPipe Hand Landmarker is used to detect hand and finger movements, and each gesture is mapped to a specific command for drawing, erasing, changing color, and clearing the entire canvas.
 
-✨ قابلیت‌ها
-🖊️ نقاشی با حرکت انگشت اشاره
-🧹 پاک کردن قسمت‌های مختلف با مشت کردن دست
-🗑️ پاک کردن کل صفحه با بالا بردن انگشت شست
-🎨 تغییر رنگ با بالا بردن دو انگشت
-✋ توقف موقت با بالا بردن تمام انگشت‌ها
-🌈 پشتیبانی از چند رنگ مختلف
-📷 استفاده از وب‌کم به صورت Real-Time
-🖥️ نمایش در حالت Fullscreen
-⌨️ کنترل با کیبورد برای پاک کردن و خروج از برنامه
-🤌 حرکات دست
-حرکت دست	عملکرد
-☝️ فقط انگشت اشاره	نقاشی
-✊ مشت	پاک کردن
-👍 فقط انگشت شست	پاک کردن کل صفحه
-✌️ دو انگشت	تغییر رنگ
-🖐️ پنج انگشت	توقف
-بدون دست	حالت آماده
-🛠️ تکنولوژی‌های استفاده‌شده
+✨ Features
+🖊️ Draw with the index finger
+
+🧹 Erase parts of the drawing by making a fist
+
+🗑️ Clear the entire canvas by raising the thumb
+
+🎨 Change color by raising two fingers
+
+✋ Pause by raising all fingers
+
+🌈 Support for multiple colors
+
+📷 Real-time webcam input
+
+🖥️ Fullscreen display
+
+⌨️ Keyboard controls for clearing and exiting the program
+
+🤌 Hand Gestures
+Hand Gesture	Action
+☝️ Index finger only	Draw
+✊ Fist	Erase
+👍 Thumb only	Clear entire canvas
+✌️ Two fingers	Change color
+🖐️ Five fingers	Pause
+No hand	Idle / Ready state
+🛠️ Technologies Used
 Python
+
 OpenCV
+
 MediaPipe
+
 Math
+
 Time
-📦 نصب کتابخانه‌ها
 
-ابتدا کتابخانه‌های مورد نیاز را نصب کنید:
+📦 Installing Dependencies
+First, install the required libraries:
 
+text
 pip install opencv-python mediapipe
-📁 ساختار پروژه
+📁 Project Structure
+text
 Air_Drawing/
 │
 ├── Air_Drawing.py
 ├── hand_landmarker.task
 └── README.md
+The hand_landmarker.task file is the MediaPipe model used for hand detection and must be placed alongside the Python file.
 
-فایل hand_landmarker.task مدل مورد استفاده‌ی MediaPipe برای تشخیص دست است و باید در کنار فایل Python قرار داشته باشد.
+▶️ Running the Project
+After installing the libraries and placing the model file in the project folder, run the program:
 
-▶️ اجرای پروژه
-
-بعد از نصب کتابخانه‌ها و قرار دادن فایل مدل در پوشه‌ی پروژه، برنامه را اجرا کنید:
-
+text
 python Air_Drawing.py
+The webcam will activate, and you can start drawing with hand gestures.
 
-وب‌کم فعال می‌شود و می‌توانید با حرکات دست شروع به نقاشی کنید.
+🎨 Available Colors
+The project currently supports the following colors:
 
-🎨 رنگ‌های موجود
+⚪ White
 
-در حال حاضر پروژه از رنگ‌های زیر پشتیبانی می‌کند:
+🔵 Blue
 
-⚪ سفید
-🔵 آبی
-🟢 سبز
-🔴 قرمز
-🟡 زرد
-🟣 بنفش
+🟢 Green
 
-با استفاده از gesture دو انگشتی می‌توان بین رنگ‌ها جابه‌جا شد.
+🔴 Red
 
-⌨️ کنترل با کیبورد
-کلید	عملکرد
-C	پاک کردن صفحه
-Q	خروج از برنامه
-ESC	خروج از برنامه
-🧠 نحوه عملکرد
+🟡 Yellow
 
-ابتدا تصویر دریافت‌شده از وب‌کم توسط OpenCV پردازش می‌شود. سپس MediaPipe نقاط مختلف دست را شناسایی می‌کند.
+🟣 Purple
 
-با بررسی موقعیت این نقاط، مشخص می‌شود که کدام انگشت‌ها باز هستند. سپس بر اساس تعداد و ترکیب انگشت‌های باز، gesture مربوطه تشخیص داده می‌شود.
+You can cycle through the colors using the two-finger gesture.
 
-در حالت DRAW، موقعیت نوک انگشت اشاره به مختصات تصویر تبدیل شده و بین موقعیت فعلی و قبلی یک خط رسم می‌شود.
-👩‍💻 درباره پروژه
+⌨️ Keyboard Controls
+Key	Action
+C	Clear the canvas
+Q	Exit the program
+ESC	Exit the program
+🧠 How It Works
+First, the image captured from the webcam is processed by OpenCV. Then MediaPipe identifies the various landmarks of the hand.
 
-این پروژه به عنوان یک تمرین عملی در حوزه‌ی Computer Vision، Hand Tracking و Human-Computer Interaction (HCI) توسعه داده شده است.
+By examining the positions of these landmarks, it determines which fingers are extended. Based on the number and combination of extended fingers, the corresponding gesture is recognized.
 
-هدف پروژه، استفاده از تشخیص حرکات دست برای ایجاد یک رابط کاربری بدون نیاز به لمس صفحه است.
-این پروژه به عنوان یک تمرین عملی در حوزه‌ی Computer Vision، Hand Tracking و Human-Computer Interaction (HCI) توسعه داده شده است.
+In DRAW mode, the position of the index fingertip is converted to image coordinates, and a line is drawn between the current and previous positions.
 
-هدف پروژه، استفاده از تشخیص حرکات دست برای ایجاد یک رابط کاربری بدون نیاز به لمس صفحه است
+👩‍💻 About the Project
+This project was developed as a practical exercise in the areas of Computer Vision, Hand Tracking, and Human-Computer Interaction (HCI).
+
+The goal of the project is to use hand gesture recognition to create a user interface that requires no screen contact.
+
+This project was developed as a practical exercise in the areas of Computer Vision, Hand Tracking, and Human-Computer Interaction (HCI).
+
+The goal of the project is to use hand gesture recognition to create a user interface that requires no screen contact.
+
